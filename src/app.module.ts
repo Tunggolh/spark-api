@@ -4,7 +4,6 @@ import { UsersModule } from './features/users/users.module';
 import { PostsModule } from './features/posts/posts.module';
 import { FollowModule } from './features/follow/follow.module';
 import { LikesModule } from './features/likes/likes.module';
-import { LikeController } from './features/like/like.controller';
 
 @Module({
   imports: [
@@ -14,7 +13,7 @@ import { LikeController } from './features/like/like.controller';
     FollowModule,
     LikesModule,
   ],
-  controllers: [LikeController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}

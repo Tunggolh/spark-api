@@ -40,12 +40,20 @@ export class User {
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
 
-  @ManyToMany(() => User, (user) => user.followings)
-  @JoinTable({ name: 'follows' })
+  @ManyToMany(() => User, (user) => user.followings, { cascade: true })
+  @JoinTable({
+    name: 'follows',
+    joinColumn: { name: 'followerId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'followingId', referencedColumnName: 'id' },
+  })
   followers: User[];
 
   @ManyToMany(() => User, (user) => user.followers)
-  @JoinTable({ name: 'follows' })
+  @JoinTable({
+    name: 'follows',
+    joinColumn: { name: 'followingId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'followerId', referencedColumnName: 'id' },
+  })
   followings: User[];
 
   @ManyToMany(() => Post, (post) => post.likers)
