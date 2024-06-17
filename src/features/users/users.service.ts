@@ -18,7 +18,10 @@ export class UsersService {
   ) {}
 
   async findOne(id: number): Promise<User> {
-    const user = this.usersRepository.findOne({ where: { id } });
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    console.log('test');
+    console.log(user);
 
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);
@@ -28,7 +31,7 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.usersRepository.save(createUserDto);
+    return await this.usersRepository.save(createUserDto);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {

@@ -15,7 +15,7 @@ export class PostsService {
   ) {}
 
   async findAll(): Promise<Post[]> {
-    return this.postRepository.find({ order: { id: 'desc' } });
+    return await this.postRepository.find({ order: { id: 'desc' } });
   }
 
   async findOne(id: number): Promise<Post> {
