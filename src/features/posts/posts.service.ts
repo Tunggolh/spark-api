@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Post } from 'src/database/entities/post.entity';
+import { PostEntity } from 'src/database/entities/post.entity';
 import { DeepPartial, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -9,16 +9,16 @@ import { UsersService } from '../users/users.service';
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
     private readonly userService: UsersService,
   ) {}
 
-  async findAll(): Promise<Post[]> {
+  async findAll(): Promise<PostEntity[]> {
     return await this.postRepository.find({ order: { id: 'desc' } });
   }
 
-  async findOne(id: number): Promise<Post> {
+  async findOne(id: number): Promise<PostEntity> {
     const post = await this.postRepository.findOne({ where: { id } });
 
     if (!post) {
@@ -28,10 +28,10 @@ export class PostsService {
     return post;
   }
 
-  async create(createPostDto: CreatePostDto): Promise<Post> {
+  async create(createPostDto: CreatePostDto): Promise<PostEntity> {
     const author = await this.userService.findOne(createPostDto.author);
 
-    const newPost: DeepPartial<Post> = {
+    const newPost: DeepPartial<PostEntity> = {
       content: createPostDto.content,
       author,
     };
@@ -39,7 +39,7 @@ export class PostsService {
     return await this.postRepository.save(newPost);
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto): Promise<Post> {
+  async update(id: number, updatePostDto: UpdatePostDto): Promise<PostEntity> {
     const post = await this.postRepository.preload({
       id,
       ...updatePostDto,

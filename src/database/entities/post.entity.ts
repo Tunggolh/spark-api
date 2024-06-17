@@ -11,8 +11,8 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity()
-export class Post {
+@Entity('post')
+export class PostEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

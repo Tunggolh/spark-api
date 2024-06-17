@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Post } from './post.entity';
+import { PostEntity } from './post.entity';
 
 @Entity()
 export class User {
@@ -41,8 +41,8 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Post, (post) => post.author)
-  posts: Post[];
+  @OneToMany(() => PostEntity, (post) => post.author)
+  posts: PostEntity[];
 
   @ManyToMany(() => User, (user) => user.followers, { cascade: true })
   @JoinTable({
@@ -55,7 +55,7 @@ export class User {
   @ManyToMany(() => User, (user) => user.followings)
   followers: User[];
 
-  @ManyToMany(() => Post, (post) => post.likers)
+  @ManyToMany(() => PostEntity, (post) => post.likers)
   @JoinTable({ name: 'likes' })
-  likedPosts: Post[];
+  likedPosts: PostEntity[];
 }
