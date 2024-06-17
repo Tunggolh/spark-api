@@ -53,18 +53,18 @@ export class UsersService {
       this.findOne(followDto.follower),
     ]);
 
-    if (!currentUser.followings) {
-      currentUser.followings = [];
-    }
-
     const isFollowing = currentUser.followings.some(
       (following) => following.id === userToFollow.id,
     );
 
+    if (!currentUser.followings) {
+      currentUser.followings = [];
+    }
+
     switch (followDto.action) {
       case FollowActionEnum.FOLLOW:
         if (isFollowing) {
-          throw new BadRequestException('Already Followed');
+          throw new BadRequestException('Already Followed User');
         }
         currentUser.followings.push(userToFollow);
         break;
@@ -72,7 +72,7 @@ export class UsersService {
       case FollowActionEnum.UNFOLLOW:
         if (!isFollowing) {
           throw new BadRequestException(
-            'Action invalid: currently not followed',
+            'Action invalid: currently not followed user',
           );
         }
         currentUser.followings = currentUser.followings.filter(

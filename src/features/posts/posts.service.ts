@@ -1,10 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from 'src/database/entities/post.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Like, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UsersService } from '../users/users.service';
+import { LikePostDto } from './dto/like-post.dto';
+import { LikeActionEnum } from 'src/common/enums/like-action.enum';
 
 @Injectable()
 export class PostsService {
@@ -19,7 +25,10 @@ export class PostsService {
   }
 
   async findOne(id: number): Promise<PostEntity> {
-    const post = await this.postRepository.findOne({ where: { id } });
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: ['likers'],
+    });
 
     if (!post) {
       throw new NotFoundException(`Post #${id} not found`);
@@ -57,22 +66,40 @@ export class PostsService {
     this.postRepository.remove(post);
   }
 
-  async likePost(id: number, userId: number) {
-    const post = await this.findOne(id);
-    const user = await this.userService.findOne(userId);
+  async likePost(id: number, likePostDto: LikePostDto) {
+    const [post, user] = await Promise.all([
+      await this.findOne(id),
+      await this.userService.findOne(likePostDto.liker),
+    ]);
 
-    post.likesCount++;
-    post.likers.push(user);
+    const isLike = post.likers.some((liker) => liker.id === user.id);
 
-    this.postRepository.save(post);
-  }
+    if (!post.likers) {
+      post.likers = [];
+    }
 
-  async unlikePost(id: number, userId: number) {
-    const post = await this.findOne(id);
-    const user = await this.userService.findOne(userId);
+    switch (likePostDto.action) {
+      case LikeActionEnum.LIKE:
+        if (isLike) {
+          throw new BadRequestException('Already liked post');
+        }
+        post.likesCount++;
+        post.likers.push(user);
+        break;
 
-    post.likesCount--;
-    post.likers.filter((liker) => liker.id !== user.id);
+      case LikeActionEnum.UNLIKE:
+        if (!isLike) {
+          throw new BadRequestException(
+            'Action invalid: currently not liked post',
+          );
+        }
+        post.likesCount--;
+        post.likers.filter((liker) => liker.id !== user.id);
+        break;
+
+      default:
+        throw new BadRequestException('Invalid Action');
+    }
 
     this.postRepository.save(post);
   }
