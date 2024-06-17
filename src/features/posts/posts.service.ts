@@ -51,4 +51,9 @@ export class PostsService {
 
     return await this.postRepository.save(post);
   }
+
+  async remove(id: number): Promise<void> {
+    const post = await this.findOne(id);
+    this.postRepository.remove(post);
+  }
 }
