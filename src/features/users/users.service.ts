@@ -10,6 +10,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FollowUserDto } from './dto/follow-user.dto';
 import { FollowActionEnum } from 'src/common/enums/follow-action.enum';
+import { IUserRelation } from 'src/common/interfaces/IUserRelation';
+import { UserRelationsEnum } from 'src/common/enums/user-relation.enum';
+import { PostEntity } from 'src/database/entities/post.entity';
 
 @Injectable()
 export class UsersService {
@@ -17,10 +20,10 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  async findOne(id: number): Promise<User> {
+  async findOne(id: number, relations?: IUserRelation): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: { id },
-      relations: ['followings', 'followers', 'likedPosts'],
+      relations: relations?.relations,
     });
 
     if (!user) {
@@ -50,7 +53,9 @@ export class UsersService {
   async followUser(id: number, followDto: FollowUserDto) {
     const [userToFollow, currentUser] = await Promise.all([
       this.findOne(id),
-      this.findOne(followDto.follower),
+      this.findOne(followDto.follower, {
+        relations: [UserRelationsEnum.FOLLOWING],
+      }),
     ]);
 
     const isFollowing = currentUser.followings.some(
@@ -88,12 +93,23 @@ export class UsersService {
   }
 
   async getFollowers(id: number): Promise<User[]> {
-    const user = await this.findOne(id);
+    const user = await this.findOne(id, {
+      relations: [UserRelationsEnum.FOLLOWERS],
+    });
     return user.followers;
   }
 
   async getFollowing(id: number): Promise<User[]> {
-    const user = await this.findOne(id);
+    const user = await this.findOne(id, {
+      relations: [UserRelationsEnum.FOLLOWING],
+    });
     return user.followings;
+  }
+
+  async getLikedPosts(id: number): Promise<PostEntity[]> {
+    const user = await this.findOne(id, {
+      relations: [UserRelationsEnum.LIKED_POSTS],
+    });
+    return user.likedPosts;
   }
 }

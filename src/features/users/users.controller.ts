@@ -12,6 +12,8 @@ import { User } from 'src/database/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FollowUserDto } from './dto/follow-user.dto';
+import { UserRelationsEnum } from 'src/common/enums/user-relation.enum';
+import { PostEntity } from 'src/database/entities/post.entity';
 
 @Controller('users')
 export class UsersController {
@@ -41,5 +43,20 @@ export class UsersController {
     @Body() followUserDto: FollowUserDto,
   ) {
     return this.userService.followUser(id, followUserDto);
+  }
+
+  @Get(':id/followers')
+  async getFollowers(@Param('id') id: number): Promise<User[]> {
+    return this.userService.getFollowers(id);
+  }
+
+  @Get(':id/following')
+  async getFollowing(@Param('id') id: number): Promise<User[]> {
+    return this.userService.getFollowing(id);
+  }
+
+  @Get(':id/liked_posts')
+  async getLikedPosts(@Param('id') id: number): Promise<PostEntity[]> {
+    return this.userService.getLikedPosts(id);
   }
 }
