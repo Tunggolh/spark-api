@@ -33,6 +33,5 @@ export class Post {
   author: User;
 
   @ManyToMany(() => User, (user) => user.likedPosts)
-  @JoinTable({ name: 'likes' })
   likers: User[];
 }
