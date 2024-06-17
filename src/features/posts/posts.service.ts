@@ -56,4 +56,24 @@ export class PostsService {
     const post = await this.findOne(id);
     this.postRepository.remove(post);
   }
+
+  async likePost(id: number, userId: number) {
+    const post = await this.findOne(id);
+    const user = await this.userService.findOne(userId);
+
+    post.likesCount++;
+    post.likers.push(user);
+
+    this.postRepository.save(post);
+  }
+
+  async unlikePost(id: number, userId: number) {
+    const post = await this.findOne(id);
+    const user = await this.userService.findOne(userId);
+
+    post.likesCount--;
+    post.likers.filter((liker) => liker.id !== user.id);
+
+    this.postRepository.save(post);
+  }
 }
