@@ -3,7 +3,7 @@ import { UserModel } from './user.model';
 export class PostModel {
   id: number;
   content: string;
-  creator: UserModel;
+  author: UserModel;
   createdAt: Date;
   updatedAt: Date;
   likesCount: number;

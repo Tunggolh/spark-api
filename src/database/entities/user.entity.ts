@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -36,12 +37,18 @@ export class User {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @OneToMany(() => Post, (post) => post.creator)
+  @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
 
   @ManyToMany(() => User, (user) => user.followings)
+  @JoinTable({ name: 'follows' })
   followers: User[];
 
   @ManyToMany(() => User, (user) => user.followers)
+  @JoinTable({ name: 'follows' })
   followings: User[];
+
+  @ManyToMany(() => Post, (post) => post.likers)
+  @JoinTable({ name: 'likes' })
+  likedPosts: Post[];
 }

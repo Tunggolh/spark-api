@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
@@ -19,5 +26,9 @@ export class Post {
   likesCount: number;
 
   @ManyToOne(() => User, (user) => user.posts)
-  creator: User;
+  author: User;
+
+  @ManyToMany(() => User, (user) => user.likedPosts)
+  @JoinTable({ name: 'likes' })
+  likers: User[];
 }
