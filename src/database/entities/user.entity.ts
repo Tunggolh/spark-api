@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Post } from './post.entity';
 
 @Entity()
@@ -12,7 +18,7 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()
@@ -32,4 +38,10 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.creator)
   posts: Post[];
+
+  @ManyToMany(() => User, (user) => user.followings)
+  followers: User[];
+
+  @ManyToMany(() => User, (user) => user.followers)
+  followings: User[];
 }
