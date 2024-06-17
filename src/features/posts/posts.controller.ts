@@ -46,7 +46,7 @@ export class PostsController {
   }
 
   @Post(':id/like')
-  async likePost(@Param('id') id: number, likePostDto: LikePostDto) {
+  async likePost(@Param('id') id: number, @Body() likePostDto: LikePostDto) {
     return this.postService.likePost(id, likePostDto);
   }
 }

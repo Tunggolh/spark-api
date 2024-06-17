@@ -27,7 +27,7 @@ export class PostsService {
   async findOne(id: number): Promise<PostEntity> {
     const post = await this.postRepository.findOne({
       where: { id },
-      relations: ['likers'],
+      relations: ['likers', 'author'],
     });
 
     if (!post) {
@@ -94,7 +94,7 @@ export class PostsService {
           );
         }
         post.likesCount--;
-        post.likers.filter((liker) => liker.id !== user.id);
+        post.likers = post.likers.filter((liker) => liker.id !== user.id);
         break;
 
       default:
