@@ -1,11 +1,13 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -17,10 +19,10 @@ export class Post {
   @Column({ length: 280 })
   content: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @Column({ default: 0 })
