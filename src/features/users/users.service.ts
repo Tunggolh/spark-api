@@ -13,6 +13,8 @@ import { FollowActionEnum } from 'src/common/enums/follow-action.enum';
 import { IUserRelation } from 'src/common/interfaces/IUserRelation';
 import { UserRelationsEnum } from 'src/common/enums/user-relation.enum';
 import { PostEntity } from 'src/database/entities/post.entity';
+import { IUserFilter } from 'src/common/interfaces/IUserFilter';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -33,8 +35,21 @@ export class UsersService {
     return user;
   }
 
+  async findOneBy(options: IUserFilter): Promise<User> {
+    return await this.usersRepository.findOne({
+      where: options,
+    });
+  }
+
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersRepository.save(createUserDto);
+    const { password, ...userDetails } = createUserDto;
+    const hashedPassword = await this.hashPassword(password);
+
+    const newUser = this.usersRepository.create({
+      ...userDetails,
+      password: hashedPassword,
+    });
+    return await this.usersRepository.save(newUser);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
@@ -111,5 +126,10 @@ export class UsersService {
       relations: [UserRelationsEnum.LIKED_POSTS],
     });
     return user.likedPosts;
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt();
+    return bcrypt.hash(password, salt);
   }
 }
