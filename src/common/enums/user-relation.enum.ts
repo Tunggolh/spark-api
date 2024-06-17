@@ -1,6 +1,6 @@
 export enum UserRelationsEnum {
   POSTS = 'posts',
-  FOLLOWING = 'followings',
+  FOLLOWING = 'following',
   FOLLOWERS = 'followers',
   LIKED_POSTS = 'likedPosts',
 }

@@ -58,12 +58,12 @@ export class UsersService {
       }),
     ]);
 
-    const isFollowing = currentUser.followings.some(
+    const isFollowing = currentUser.following.some(
       (following) => following.id === userToFollow.id,
     );
 
-    if (!currentUser.followings) {
-      currentUser.followings = [];
+    if (!currentUser.following) {
+      currentUser.following = [];
     }
 
     switch (followDto.action) {
@@ -71,7 +71,7 @@ export class UsersService {
         if (isFollowing) {
           throw new BadRequestException('Already Followed User');
         }
-        currentUser.followings.push(userToFollow);
+        currentUser.following.push(userToFollow);
         break;
 
       case FollowActionEnum.UNFOLLOW:
@@ -80,7 +80,7 @@ export class UsersService {
             'Action invalid: currently not followed user',
           );
         }
-        currentUser.followings = currentUser.followings.filter(
+        currentUser.following = currentUser.following.filter(
           (following) => following.id !== userToFollow.id,
         );
         break;
@@ -103,7 +103,7 @@ export class UsersService {
     const user = await this.findOne(id, {
       relations: [UserRelationsEnum.FOLLOWING],
     });
-    return user.followings;
+    return user.following;
   }
 
   async getLikedPosts(id: number): Promise<PostEntity[]> {

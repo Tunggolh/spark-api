@@ -50,9 +50,9 @@ export class User {
     joinColumn: { name: 'followerId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'followingId', referencedColumnName: 'id' },
   })
-  followings: User[];
+  following: User[];
 
-  @ManyToMany(() => User, (user) => user.followings)
+  @ManyToMany(() => User, (user) => user.following)
   followers: User[];
 
   @ManyToMany(() => PostEntity, (post) => post.likers)
