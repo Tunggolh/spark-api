@@ -14,7 +14,7 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 280 })
   content: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
