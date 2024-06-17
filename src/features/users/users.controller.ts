@@ -40,14 +40,6 @@ export class UsersController {
     @Param('id') id: number,
     @Body() followUserDto: FollowUserDto,
   ) {
-    return this.userService.followUser(followUserDto);
-  }
-
-  @Delete(':id/follow')
-  async unfollowUser(
-    @Param('id') id: number,
-    @Body() followUserDto: FollowUserDto,
-  ) {
-    return this.userService.unfollowUser(followUserDto);
+    return this.userService.followUser(id, followUserDto);
   }
 }
