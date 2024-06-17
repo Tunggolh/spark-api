@@ -5,6 +5,7 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { isUnique } from 'src/common/decorators/unique.decorator';
 
 export class CreateUserDto {
   @IsString()
@@ -17,11 +18,13 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
+  @isUnique({ tableName: 'user', column: 'username' })
   username: string;
 
   @IsString()
   @IsNotEmpty()
   @IsEmail()
+  @isUnique({ tableName: 'user', column: 'email' })
   email: string;
 
   @IsString()
