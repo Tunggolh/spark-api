@@ -4,6 +4,7 @@ import { User } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FollowUserDto } from './dto/follow-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -36,5 +37,30 @@ export class UsersService {
     }
 
     return this.usersRepository.save(user);
+  }
+
+  async followUser(followDto: FollowUserDto) {
+    const userToFollow = await this.findOne(followDto.user);
+    const currentUser = await this.findOne(followDto.follower);
+
+    if (
+      !currentUser.followings.find(
+        (following) => following.id === userToFollow.id,
+      )
+    ) {
+      currentUser.followings.push(userToFollow);
+      await this.usersRepository.save(currentUser);
+    }
+  }
+
+  async unfollowUser(followDto: FollowUserDto) {
+    const userToFollow = await this.findOne(followDto.user);
+    const currentUser = await this.findOne(followDto.follower);
+
+    currentUser.followings = currentUser.followings.filter(
+      (following) => following.id !== userToFollow.id,
+    );
+
+    await this.usersRepository.save(currentUser);
   }
 }
