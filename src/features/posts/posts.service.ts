@@ -4,7 +4,6 @@ import { Post } from 'src/database/entities/post.entity';
 import { DeepPartial, Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { CreatePostDto } from './dto/create-post.dto';
-import { User } from 'src/database/entities/user.entity';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -41,9 +40,15 @@ export class PostsService {
   }
 
   async update(id: number, updatePostDto: UpdatePostDto): Promise<Post> {
-    const post = await this.findOne(id);
-    const updatedPost = Object.assign(post, updatePostDto);
+    const post = await this.postRepository.preload({
+      id,
+      ...updatePostDto,
+    });
 
-    return await this.postRepository.save(updatedPost);
+    if (!post) {
+      throw new NotFoundException(`Post #${id} not found`);
+    }
+
+    return await this.postRepository.save(post);
   }
 }
