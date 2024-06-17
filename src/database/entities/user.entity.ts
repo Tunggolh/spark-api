@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -20,6 +21,7 @@ export class User {
   lastName: string;
 
   @Column({ unique: true })
+  @Index()
   username: string;
 
   @Column()

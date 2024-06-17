@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -26,6 +27,7 @@ export class Post {
   likesCount: number;
 
   @ManyToOne(() => User, (user) => user.posts)
+  @Index()
   author: User;
 
   @ManyToMany(() => User, (user) => user.likedPosts)
