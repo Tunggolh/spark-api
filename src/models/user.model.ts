@@ -1,3 +1,5 @@
+import { PostModel } from './post.model';
+
 export class UserModel {
   id: number;
   firstName: string;
@@ -5,7 +7,10 @@ export class UserModel {
   username: string;
   email: string;
   password: string;
-  bio: string;
+  bio?: string;
   createdAt: Date;
   updatedAt: Date;
+  posts?: PostModel[];
+  following?: UserModel[];
+  followers?: UserModel[];
 }
