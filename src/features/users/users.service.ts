@@ -63,4 +63,14 @@ export class UsersService {
 
     await this.usersRepository.save(currentUser);
   }
+
+  async getFollowers(id: number): Promise<User[]> {
+    const user = await this.findOne(id);
+    return user.followers;
+  }
+
+  async getFollowing(id: number): Promise<User[]> {
+    const user = await this.findOne(id);
+    return user.followings;
+  }
 }
