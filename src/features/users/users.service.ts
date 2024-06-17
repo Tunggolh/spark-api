@@ -53,6 +53,10 @@ export class UsersService {
       this.findOne(followDto.follower),
     ]);
 
+    if (!currentUser.followings) {
+      currentUser.followings = [];
+    }
+
     const isFollowing = currentUser.followings.some(
       (following) => following.id === userToFollow.id,
     );
