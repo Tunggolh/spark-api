@@ -6,4 +6,6 @@ export class PostModel {
   creator: UserModel;
   createdAt: Date;
   updatedAt: Date;
+  likesCount: number;
+  likers?: UserModel[];
 }
